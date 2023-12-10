@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minigame Minecraft</title>
+    
+    <audio id="audio-wrong" src="wrong.mp3" preload="auto"></audio>
+    <audio id="audio-treasure" src="treasure.mp3" preload="auto"></audio>
+    
+    <style>
+        /* Estilos CSS */
+        @import url('https://fonts.cdnfonts.com/css/minecraftia');
+        body {
+            background-image: url('minecraft-background.jpg'); /* Adicione a imagem de fundo desejada */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: 'Minecraftia', sans-serif;                                                
+              /* Use a fonte Minecraft ou semelhante */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .block {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            float: left;
+            cursor: pointer;
+            background-image: url('minecraft-block.png'); /* Imagem de bloco do Minecraft */
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .block.opened {
+            background-image: url('minecraft-chest-empty.png'); /* Imagem de baú vazio */
+        }
+
+        .block.treasure {
+            background-image: url('minecraft-chest-treasure.png'); /* Imagem de baú com tesouro */
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        #result {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+   
+    <div class="container">
+        <h1>CAVERNA MISTERIOSA</h1>
+        <p>Seja bem-vindo à caverna misteriosa!</p>
+        <p>Clique nos baús para encontrar o tesouro</p>
+        
+
+        <div id="game-board">
+        <!-- Blocos serão adicionados aqui dinamicamente -->
+        </div>
+        <p id="result"></p>
+        
+    </div>
+    
+    <script>
+        // JavaScript
+const gameBoard = document.getElementById("game-board");
+const result = document.getElementById("result");
+const blocks = [];
+const treasureLocation = Math.floor(Math.random() * 9); // Número entre 0 e 8
+let gameOver = false;
+
+const audioWrong = document.getElementById("audio-wrong");
+const audioTreasure = document.getElementById("audio-treasure");
+
+// Cria os blocos no tabuleiro
+for (let i = 0; i < 9; i++) {
+    const block = document.createElement("div");
+    block.classList.add("block");
+    block.addEventListener("click", () => checkForTreasure(i));
+    gameBoard.appendChild(block);
+    blocks.push(block);
+}
+
+// Função para verificar se o tesouro foi encontrado
+function checkForTreasure(index) {
+    if (gameOver || blocks[index].classList.contains("opened")) {
+        return;
+    }
+
+    if (index === treasureLocation) {
+        result.textContent = "Parabéns!!! Você encontrou o tesouro!";
+        blocks[index].classList.add("opened");
+        blocks[index].classList.add("treasure"); // Adiciona a classe "treasure"
+        gameOver = true;
+        playSound(audioTreasure); // Reproduz o som do tesouro
+    
+    } else {
+        result.textContent = "Não está aqui... Tente novamente!";
+        blocks[index].classList.add("opened"); // Adiciona a classe "opened" para mostrar o baú vazio
+        playSound(audioWrong); // Reproduz o som de erro
+    }
+}
+
+// Função para reproduzir um som
+function playSound(audio) {
+    if (audio) {
+        audio.currentTime = 0; // Reinicia o áudio se já estiver tocando
+        audio.play();
+    }
+}
+
+    </script>
+</body>
+</html>
